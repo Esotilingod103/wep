@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>Geometric Shapes with Explosions in A-Frame</title>
+    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+    <script src="https://cdn.rawgit.com/donmccurdy/aframe-physics-system/v3.3.0/dist/aframe-physics-system.min.js"></script>
+    <script src="https://unpkg.com/aframe-extras@6.1.1/dist/aframe-extras.min.js"></script>
+  </head>
+  <body>
+    <a-scene physics="gravity: 0 -9.8 0">
+      <!-- Add a light source -->
+      <a-light type="directional" position="0 2 2" intensity="1"></a-light>
+
+      <!-- Add a camera -->
+      <a-camera position="0 1.6 4"></a-camera>
+
+      <!-- Add a static floor for collisions -->
+      <a-plane position="0 0 -5" rotation="-90 0 0" width="20" height="20" color="#7BC8A4" static-body></a-plane>
+
+      <!-- Add geometric shapes with dynamic bodies and collision detection -->
+      <a-box position="-3 2 -3" rotation="0 45 45" color="#4CC3D9" dynamic-body></a-box>
+      <a-sphere position="3 3.25 -3" radius="1.25" color="#EF2D5E" dynamic-body></a-sphere>
+      <a-cylinder position="0 1.75 -5" radius="0.5" height="1.5" color="#FFC65D" dynamic-body></a-cylinder>
+      <a-cone position="6 2.5 -4" radius-bottom="1" radius-top="0.5" height="2" color="#7BC8A4" dynamic-body></a-cone>
+
+      <!-- Add a sky background -->
+      <a-sky color="#ECECEC"></a-sky>
+
+      <script>
+        AFRAME.registerComponent('explosive', {
+          init: function () {
+            this.el.addEventListener('collide', function (e) {
+              // Trigger an explosion effect
+              explode(e.detail.body.el);
+            });
+          }
+        });
+
+        function explode(el) {
+          el.setAttribute('animation', {
+            property: 'scale',
+            to: '2 2 2',
+            dur: 100,
+            easing: 'easeOutElastic',
+            loop: false
+          });
+
+          setTimeout(function () {
+            el.parentNode.removeChild(el);
+          }, 100); // Remove the element after the animation
+        }
+
+        document.querySelectorAll('[dynamic-body]').forEach(el => el.setAttribute('explosive', ''));
+      </script>
+    </a-scene>
+  </body>
+</html>
+
+
+
+
+
